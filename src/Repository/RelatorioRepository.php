@@ -10,7 +10,7 @@ class RelatorioRepository
         private Connection $connection
     ) {
     }
-    
+
     // Consulta a view aplicando os filtros informados
     public function listar(array $filtros = []): array
     {

@@ -76,7 +76,7 @@ class AutorRN
     public function editar(Autor $autor): Autor
     {
         $nome = trim($autor->getNome());
-        
+
         // não permite editar um autor inativo
         if (!$autor->isAtivo()) {
             throw new \InvalidArgumentException(
