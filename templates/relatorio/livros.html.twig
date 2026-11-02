@@ -1,0 +1,333 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Relatório de Livros - Sistema de Livros{% endblock %}
+
+{% block body %}
+<div class="py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Relatório de Livros por Autor</h1>
+            <p class="text-muted mb-0">
+                Consulta de livros, autores e assuntos cadastrados.
+            </p>
+        </div>
+
+        <button type="button"
+                class="btn btn-outline-secondary"
+                onclick="window.print()">
+            Imprimir relatório
+        </button>
+    </div>
+
+    {# FILTROS #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <strong>Parâmetros da consulta</strong>
+        </div>
+
+        <div class="card-body">
+
+            <form method="get" action="{{ path('relatorio_livros') }}">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label for="livro_status" class="form-label">
+                            Situação dos livros
+                        </label>
+
+                        <select name="livro_status"
+                                id="livro_status"
+                                class="form-select">
+
+                            <option value="todos"
+                                {{ filtros.livro_status == 'todos' ? 'selected' : '' }}>
+                                Todos
+                            </option>
+
+                            <option value="ativos"
+                                {{ filtros.livro_status == 'ativos' ? 'selected' : '' }}>
+                                Ativos
+                            </option>
+
+                            <option value="inativos"
+                                {{ filtros.livro_status == 'inativos' ? 'selected' : '' }}>
+                                Inativos
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="autor_status" class="form-label">
+                            Situação dos autores
+                        </label>
+
+                        <select name="autor_status"
+                                id="autor_status"
+                                class="form-select">
+
+                            <option value="todos"
+                                {{ filtros.autor_status == 'todos' ? 'selected' : '' }}>
+                                Todos
+                            </option>
+
+                            <option value="ativos"
+                                {{ filtros.autor_status == 'ativos' ? 'selected' : '' }}>
+                                Ativos
+                            </option>
+
+                            <option value="inativos"
+                                {{ filtros.autor_status == 'inativos' ? 'selected' : '' }}>
+                                Inativos
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="assunto_status" class="form-label">
+                            Situação dos assuntos
+                        </label>
+
+                        <select name="assunto_status"
+                                id="assunto_status"
+                                class="form-select">
+
+                            <option value="todos"
+                                {{ filtros.assunto_status == 'todos' ? 'selected' : '' }}>
+                                Todos
+                            </option>
+
+                            <option value="ativos"
+                                {{ filtros.assunto_status == 'ativos' ? 'selected' : '' }}>
+                                Ativos
+                            </option>
+
+                            <option value="inativos"
+                                {{ filtros.assunto_status == 'inativos' ? 'selected' : '' }}>
+                                Inativos
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="autor_id" class="form-label">
+                            Autor específico
+                        </label>
+
+                        <select name="autor_id"
+                                id="autor_id"
+                                class="form-select">
+
+                            <option value="">Todos os autores</option>
+
+                            {% for autor in listaAutores %}
+                                <option value="{{ autor.id }}"
+                                    {{ filtros.autor_id == autor.id ? 'selected' : '' }}>
+                                    {{ autor.nome }}
+                                    {{ autor.ativo ? '(Ativo)' : '(Inativo)' }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="assunto_id" class="form-label">
+                            Assunto específico
+                        </label>
+
+                        <select name="assunto_id"
+                                id="assunto_id"
+                                class="form-select">
+
+                            <option value="">Todos os assuntos</option>
+
+                            {% for assunto in listaAssuntos %}
+                                <option value="{{ assunto.id }}"
+                                    {{ filtros.assunto_id == assunto.id ? 'selected' : '' }}>
+                                    {{ assunto.descricao }}
+                                    {{ assunto.ativo ? '(Ativo)' : '(Inativo)' }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{{ path('relatorio_livros') }}"
+                       class="btn btn-outline-secondary">
+                        Limpar filtros
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Gerar relatório
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    {# RESULTADO DO RELATÓRIO #}
+    <div id="resultado-relatorio">
+
+        {% if autores is empty %}
+
+            <div class="alert alert-info">
+                Nenhum registro encontrado para os filtros selecionados.
+            </div>
+
+        {% else %}
+
+            <div class="mb-3 text-muted">
+                <small>
+                    Foram encontrados {{ autores|length }} autor(es).
+                </small>
+            </div>
+
+            {% for autor in autores %}
+
+                <div class="card shadow-sm mb-4">
+
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Autor: {{ autor.nome }}</strong>
+                            <small class="text-muted ms-2">
+                                Código: {{ autor.id }}
+                            </small>
+                        </div>
+
+                        {% if autor.ativo %}
+                            <span class="badge bg-success">Ativo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inativo</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover align-middle mb-0">
+
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Livro</th>
+                                        <th>Editora</th>
+                                        <th>Edição</th>
+                                        <th>Ano</th>
+                                        <th>Valor</th>
+                                        <th>Assuntos</th>
+                                        <th>Situação</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for livro in autor.livros %}
+
+                                        <tr>
+                                            <td>
+                                                <strong>{{ livro.titulo }}</strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    Código: {{ livro.id }}
+                                                </small>
+                                            </td>
+
+                                            <td>{{ livro.editora }}</td>
+
+                                            <td>{{ livro.edicao }}</td>
+
+                                            <td>{{ livro.ano }}</td>
+
+                                            <td>
+                                                R$ {{ livro.valor|number_format(2, ',', '.') }}
+                                            </td>
+
+                                            <td>
+                                                {% for assunto in livro.assuntos %}
+                                                    <div>
+                                                        {{ assunto.descricao }}
+
+                                                        {% if not assunto.ativo %}
+                                                            <small class="text-muted">(Inativo)</small>
+                                                        {% endif %}
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted">
+                                                        Sem assunto
+                                                    </span>
+                                                {% endfor %}
+                                            </td>
+
+                                            <td>
+                                                {% if livro.ativo %}
+                                                    <span class="badge bg-success">Ativo</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Inativo</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        @media print {
+            nav,
+            header,
+            footer,
+            .card:first-child,
+            button,
+            a {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            #resultado-relatorio {
+                width: 100%;
+            }
+
+            table {
+                font-size: 10px;
+            }
+        }
+    </style>
+{% endblock %}

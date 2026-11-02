@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ titulo|default('Novo livro') }} - Sistema de Livros{% endblock %}
+
+{% block body %}
+<div class="py-4">
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1">{{ titulo|default('Novo livro') }}</h1>
+
+        <p class="text-muted mb-0">
+            {{ descricao|default('Informe os dados para cadastrar um novo livro.') }}
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+
+                <div class="row g-3">
+
+                    <div class="col-md-8">
+                        {{ form_row(form.titulo) }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form_row(form.editora) }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form_row(form.edicao) }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form_row(form.anoPublicacao) }}
+                    </div>
+
+                    <div class="col-md-4">
+                        {{ form_row(form.valor) }}
+                    </div>
+
+                    <div class="col-md-6">
+                        {{ form_row(form.autores) }}
+                        <small class="text-muted">
+                            Para selecionar vários autores, mantenha Ctrl pressionado.
+                        </small>
+                    </div>
+
+                    <div class="col-md-6">
+                        {{ form_row(form.assuntos) }}
+                        <small class="text-muted">
+                            Para selecionar vários assuntos, mantenha Ctrl pressionado.
+                        </small>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{{ path('livro_listar') }}"
+                       class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        {{ botao|default('Salvar') }}
+                    </button>
+
+                </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

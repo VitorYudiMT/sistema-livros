@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ titulo|default('Novo assunto') }} - Sistema de Livros{% endblock %}
+
+{% block body %}
+<div class="py-4">
+
+    <div class="mb-4">
+        <h1 class="h3 mb-1">{{ titulo|default('Novo assunto') }}</h1>
+        <p class="text-muted mb-0">
+            {{ descricao|default('Informe os dados para cadastrar um novo assunto.') }}
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+
+                {{ form_row(form.descricao) }}
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{{ path('assunto_listar') }}" class="btn btn-outline-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        {{ botao|default('Salvar') }}
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
